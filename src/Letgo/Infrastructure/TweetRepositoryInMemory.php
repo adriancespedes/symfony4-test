@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Letgo\Infrastructure;
 
 use App\Letgo\Domain\Tweet;
 use App\Letgo\Domain\TweetRepository;
+use App\Letgo\Domain\Tweets;
 
 final class TweetRepositoryInMemory implements TweetRepository
 {
@@ -12,14 +15,14 @@ final class TweetRepositoryInMemory implements TweetRepository
      * @param int $limit
      * @return Tweet[]
      */
-    public function searchByUserName(string $username, int $limit): array
+    public function searchByUserName(string $username, int $limit): Tweets
     {
         $randomEntries = array_rand($this->tweets, $limit);
-        $tweets = [];
+        $tweetsCollection = [];
         foreach ($randomEntries as $randomEntry) {
-            $tweets[] = new Tweet($this->tweets[$randomEntry]);
+            $tweetsCollection[] = new Tweet($this->tweets[$randomEntry]);
         }
-        return $tweets;
+        return new Tweets($tweetsCollection);
     }
 
     private $tweets = [

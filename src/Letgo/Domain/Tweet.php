@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Letgo\Domain;
 
 final class Tweet
@@ -11,7 +13,40 @@ final class Tweet
         $this->text = $text;
     }
 
-    public function getText(): string {
+    public function getText(): string
+    {
         return $this->text;
+    }
+
+    public function shout(): string
+    {
+        $shout = strtoupper($this->text);
+        $shout = $this->removeLastDotIfExists($shout);
+        $shout = $this->addExclamationMarkIfMissing($shout);
+        return $shout;
+    }
+
+    /**
+     * @param $shout
+     * @return string
+     */
+    public function addExclamationMarkIfMissing($shout): string
+    {
+        if (substr($shout, -1) !== '!') {
+            $shout .= '!';
+        }
+        return $shout;
+    }
+
+    /**
+     * @param $shout
+     * @return bool|string
+     */
+    public function removeLastDotIfExists($shout)
+    {
+        if ($shout[strlen($shout) - 1] === '.') {
+            $shout = substr($shout, 0, -1);
+        }
+        return $shout;
     }
 }
