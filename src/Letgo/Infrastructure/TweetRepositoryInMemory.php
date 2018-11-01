@@ -17,10 +17,20 @@ final class TweetRepositoryInMemory implements TweetRepository
      */
     public function searchByUserName(string $username, int $limit): Tweets
     {
-        $randomEntries = array_rand($this->tweets, $limit);
-        $tweetsCollection = [];
-        foreach ($randomEntries as $randomEntry) {
-            $tweetsCollection[] = new Tweet($this->tweets[$randomEntry]);
+        switch ($limit) {
+            case 0:
+                $tweetsCollection = array();
+                break;
+            case 1:
+                $randomKey = array_rand($this->tweets, $limit);
+                $tweetsCollection = array(new Tweet($this->tweets[$randomKey]));
+                break;
+            default:
+                $randomEntries = array_rand($this->tweets, $limit);
+                $tweetsCollection = [];
+                foreach ($randomEntries as $randomEntry) {
+                    $tweetsCollection[] = new Tweet($this->tweets[$randomEntry]);
+                }
         }
         return new Tweets($tweetsCollection);
     }

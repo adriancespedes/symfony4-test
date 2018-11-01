@@ -30,13 +30,52 @@ final class TweetCommandHandlerTest extends LetgoUnitTestCase
     /**
      * @test
      */
-    public function should_return_same_number_of_tweets()
+    public function should_return_error_if_tweet_number_is_greater_than_limit()
     {
-        $tweetCommand = new TweetCommand('adria', 10);
+        $limit = 10;
+        $this->expectException('\InvalidArgumentException');
+        $this->expectExceptionMessage(sprintf('limit must be between 0 and %d', $limit));
+        $tweetCommand = new TweetCommand('adria', 11, $limit);
+        /** @var \ArrayIterator $tweets */
+        $tweets = $this->tweetCommandHandler->handle($tweetCommand);
+    }
+
+    /**
+     * @test
+     */
+    public function should_return_no_tweets_when_tweet_number_is_zero()
+    {
+        $tweetCommand = new TweetCommand('adria', 0, 10);
         /** @var \ArrayIterator $tweets */
         $tweets = $this->tweetCommandHandler->handle($tweetCommand);
 
-        $this->assertCount(10, $tweets);
+        $this->assertCount(0, $tweets);
+    }
+
+    /**
+     * @test
+     */
+    public function should_return_one_tweet_when_tweet_number_is_one()
+    {
+        $tweetCommand = new TweetCommand('adria', 1, 10);
+        /** @var \ArrayIterator $tweets */
+        $tweets = $this->tweetCommandHandler->handle($tweetCommand);
+
+        $this->assertCount(1, $tweets);
+    }
+
+    /**
+     * @test
+     */
+    public function should_return_same_number_of_tweets_as_tweet_number()
+    {
+        for ($tweetNumber = 0; $tweetNumber <= 10; $tweetNumber++) {
+            $tweetCommand = new TweetCommand('adria', $tweetNumber, 10);
+            /** @var \ArrayIterator $tweets */
+            $tweets = $this->tweetCommandHandler->handle($tweetCommand);
+
+            $this->assertCount($tweetNumber, $tweets);
+        }
     }
 
     /**
@@ -44,16 +83,18 @@ final class TweetCommandHandlerTest extends LetgoUnitTestCase
      */
     public function should_return_tweets_shout()
     {
-        $tweetCommand = new TweetCommand('adria', 10);
-        /** @var \ArrayIterator $tweets */
-        $tweets = $this->tweetCommandHandler->handle($tweetCommand);
+        for ($tweetNumber = 0; $tweetNumber <= 10; $tweetNumber++) {
+            $tweetCommand = new TweetCommand('adria', $tweetNumber, 10);
+            /** @var \ArrayIterator $tweets */
+            $tweets = $this->tweetCommandHandler->handle($tweetCommand);
 
-        while ($tweets->valid()) {
-            /** @var Tweet $tweet */
-            $tweet = $tweets->current();
-            $this->assertSame(strtoupper($tweet), $tweet);
-            $this->assertStringEndsWith('!', $tweet);
-            $tweets->next();
+            while ($tweets->valid()) {
+                /** @var Tweet $tweet */
+                $tweet = $tweets->current();
+                $this->assertSame(strtoupper($tweet), $tweet);
+                $this->assertStringEndsWith('!', $tweet);
+                $tweets->next();
+            }
         }
     }
 }

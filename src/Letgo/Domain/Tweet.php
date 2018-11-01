@@ -20,7 +20,7 @@ final class Tweet
 
     public function shout(): string
     {
-        $shout = strtoupper($this->text);
+        $shout = strtoupper($this->getText());
         $shout = $this->removeLastDotIfExists($shout);
         $shout = $this->addExclamationMarkIfMissing($shout);
         return $shout;

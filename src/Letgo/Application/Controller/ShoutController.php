@@ -14,11 +14,13 @@ use Symfony\Component\HttpFoundation\Request;
 
 final class ShoutController extends AbstractController
 {
+
     public function index(TweetRepositoryInMemory $repo, Request $request, $twitterName)
     {
+        $limit = (int) $request->get('limit');
         $tweetSearcher = new TweetSearcher($repo);
 
-        $tweetCommand = new TweetCommand($twitterName, $this->getParameter('tweet_limit'));
+        $tweetCommand = new TweetCommand($twitterName, $limit, $this->getParameter('tweet_limit'));
         $tweetCommandHandler = new TweetCommandHandler($tweetSearcher);
         $response = $tweetCommandHandler->handle($tweetCommand);
 
