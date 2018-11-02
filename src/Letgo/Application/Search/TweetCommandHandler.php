@@ -25,6 +25,7 @@ class TweetCommandHandler
         if ($tweetLimit < $numberOfTweets || 0 > $numberOfTweets) {
             throw new \InvalidArgumentException(sprintf('limit must be between 0 and %d', $tweetLimit));
         }
+
         $tweets = $this->tweetSearcher->searchByUserName($username, $numberOfTweets);
 
         if (null === $tweets) {

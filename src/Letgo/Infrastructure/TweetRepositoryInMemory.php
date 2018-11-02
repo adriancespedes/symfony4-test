@@ -13,7 +13,7 @@ final class TweetRepositoryInMemory implements TweetRepository
     /**
      * @param string $username
      * @param int $limit
-     * @return Tweet[]
+     * @return Tweets
      */
     public function searchByUserName(string $username, int $limit): Tweets
     {
