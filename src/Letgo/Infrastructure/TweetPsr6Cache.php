@@ -10,7 +10,7 @@ use App\Letgo\Domain\Tweets;
 use Symfony\Component\Cache\Simple\FilesystemCache;
 use Symfony\Component\Cache\Simple\Psr6Cache;
 
-final class TweetPsr6Cache  extends Psr6Cache implements TweetCache
+final class TweetPsr6Cache extends Psr6Cache implements TweetCache
 {
     /**
      * @param string $username
@@ -20,7 +20,7 @@ final class TweetPsr6Cache  extends Psr6Cache implements TweetCache
      */
     public function searchByUserName(string $username, int $limit): Tweets
     {
-        $cache = new FilesystemCache('', (int) getenv('CACHE_LIFETIME'));
+        $cache = new FilesystemCache('', (int)getenv('CACHE_LIFETIME'));
         if (!$cache->has($username)) {
             $tweetRepository = new TweetRepositoryInMemory();
             $tweets = $tweetRepository->searchByUserName($username, $limit);

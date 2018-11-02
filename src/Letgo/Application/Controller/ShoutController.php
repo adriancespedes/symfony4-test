@@ -21,9 +21,13 @@ final class ShoutController extends AbstractController
 
         $tweetSearcher = new TweetSearcher($psr6Cache);
 
-        $tweetCommand = new TweetCommand($twitterName, $limit, $this->getParameter('tweet_limit'));
+        $tweetCommand = new TweetCommand($twitterName, $limit, $this->getParameter('controller_tweet_limit'));
         $tweetCommandHandler = new TweetCommandHandler($tweetSearcher);
-        $response = $tweetCommandHandler->handle($tweetCommand);
+        try {
+            $response = $tweetCommandHandler->__invoke($tweetCommand);
+        } catch (\InvalidArgumentException $argumentException){
+            $response = $argumentException->getMessage();
+        }
 
         return JsonResponse::create($response);
     }

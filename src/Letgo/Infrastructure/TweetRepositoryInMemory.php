@@ -10,31 +10,6 @@ use App\Letgo\Domain\Tweets;
 
 final class TweetRepositoryInMemory implements TweetRepository
 {
-    /**
-     * @param string $username
-     * @param int $limit
-     * @return Tweets
-     */
-    public function searchByUserName(string $username, int $limit): Tweets
-    {
-        switch ($limit) {
-            case 0:
-                $tweetsCollection = array();
-                break;
-            case 1:
-                $randomKey = array_rand($this->tweets, $limit);
-                $tweetsCollection = array(new Tweet($this->tweets[$randomKey]));
-                break;
-            default:
-                $randomEntries = array_rand($this->tweets, $limit);
-                $tweetsCollection = [];
-                foreach ($randomEntries as $randomEntry) {
-                    $tweetsCollection[] = new Tweet($this->tweets[$randomEntry]);
-                }
-        }
-        return new Tweets($tweetsCollection);
-    }
-
     private $tweets = [
         "I am not very skeptical… a good deal of skepticism in a scientific man is advisable to avoid much loss of time, but I have met not a few men, who… have often thus been deterred from experiments or observations which would have proven servicable.",
         "I know that most men, including those at ease with problems of the greatest complexity, can seldom accept even the simplest and most obvious truth if it be such as would oblige them to admit the falsity of conclusions which they have delighted in explaining to colleagues, which they have proudly taught to others, and which they have woven, thread by thread, into the fabric of their lives.",
@@ -172,4 +147,25 @@ final class TweetRepositoryInMemory implements TweetRepository
         "Without deviation from the norm, progress is not possible.",
         "A witty saying proves nothing."
     ];
+
+    /**
+     * @param string $username
+     * @param int $limit
+     * @return Tweets
+     */
+    public function searchByUserName(string $username, int $limit): Tweets
+    {
+        if ($limit === 1) {
+            $randomKey = array_rand($this->tweets, $limit);
+            $tweetsCollection = array(new Tweet($this->tweets[$randomKey]));
+        } else {
+            $randomEntries = array_rand($this->tweets, $limit);
+            $tweetsCollection = [];
+            foreach ($randomEntries as $randomEntry) {
+                $tweetsCollection[] = new Tweet($this->tweets[$randomEntry]);
+            }
+        }
+
+        return new Tweets($tweetsCollection);
+    }
 }
